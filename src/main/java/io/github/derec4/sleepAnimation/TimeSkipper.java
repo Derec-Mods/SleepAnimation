@@ -39,8 +39,6 @@ public class TimeSkipper {
 
             if (distance <= skipSpeed) {
                 world.setTime(targetTime);
-                world.setStorm(false);
-                world.setThundering(false);
                 iterator.remove();
             } else {
                 world.setTime(world.getTime() + skipSpeed);
