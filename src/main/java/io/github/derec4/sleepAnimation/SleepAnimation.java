@@ -10,7 +10,7 @@ public final class SleepAnimation extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        timeSkipper = new TimeSkipper(this, 100, 0);
+        timeSkipper = new TimeSkipper(this, 25, 0);
         timeSkipper.start();
         getServer().getPluginManager().registerEvents(new SleepListener(this), this);
 
