@@ -48,8 +48,8 @@ public class TimeSkipper {
         }
     }
 
-    public boolean startAnimation(World world) {
-        return animateWorlds.add(world);
+    public void startAnimation(World world) {
+        animateWorlds.add(world);
     }
 
     public void clear() {
