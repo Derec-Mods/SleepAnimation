@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.world.TimeSkipEvent;
 
 /**
  * Class to handle time skipping from night to day.
@@ -40,6 +41,8 @@ public class TimeSkipper {
             if (distance <= skipSpeed) {
                 world.setTime(targetTime);
                 iterator.remove();
+                TimeSkipEvent event = new TimeSkipEvent(world, TimeSkipEvent.SkipReason.NIGHT_SKIP, targetTime - current);
+                Bukkit.getPluginManager().callEvent(event);
             } else {
                 world.setTime(world.getTime() + skipSpeed);
             }
@@ -48,6 +51,10 @@ public class TimeSkipper {
 
     public void startAnimation(World world) {
         animateWorlds.add(world);
+    }
+
+    public boolean isAnimating(World world) {
+        return animateWorlds.contains(world);
     }
 
     public void clear() {

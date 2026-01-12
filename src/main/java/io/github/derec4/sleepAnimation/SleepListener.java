@@ -1,7 +1,7 @@
 package io.github.derec4.sleepAnimation;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.TimeSkipEvent;
 
@@ -13,12 +13,14 @@ public class SleepListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onTimeSkip(TimeSkipEvent event) {
-        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) {
-            event.setCancelled(true);
-            Bukkit.getLogger().info("Playing night skip animation");
-            plugin.getTimeSkipper().startAnimation(event.getWorld());
+        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP && !event.isCancelled()) {
+            // Check if this world is already animating (to avoid handling our own fired event)
+            if (!plugin.getTimeSkipper().isAnimating(event.getWorld())) {
+                event.setCancelled(true);
+                plugin.getTimeSkipper().startAnimation(event.getWorld());
+            }
         }
     }
 }
