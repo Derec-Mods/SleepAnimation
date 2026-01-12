@@ -1,21 +1,24 @@
 package io.github.derec4.sleepAnimation;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.world.TimeSkipEvent;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class to handle time skipping from night to day.
  * Credits to hraponssi
  */
 public class TimeSkipper {
-    
+
     private final SleepAnimation plugin;
     private final int skipSpeed;
     private final long targetTime;
     private final Set<World> animateWorlds = new HashSet<>();
+    private final Map<UUID, CompletableFuture<Void>> animationFutures = new ConcurrentHashMap<>();
 
     public TimeSkipper(SleepAnimation plugin, int skipSpeed, long targetTime) {
         this.plugin = plugin;
@@ -29,7 +32,9 @@ public class TimeSkipper {
 
     private void tick() {
         // early check, should not have a performance impact
-        if (animateWorlds.isEmpty()) return;
+        if (animateWorlds.isEmpty()) {
+            return;
+        }
 
         Iterator<World> iterator = animateWorlds.iterator();
         while (iterator.hasNext()) {
@@ -46,11 +51,32 @@ public class TimeSkipper {
         }
     }
 
+    private void broadcastNightSkipEvent(World world) {
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            TimeSkipEvent event = new TimeSkipEvent(
+                    world,
+                    TimeSkipEvent.SkipReason.NIGHT_SKIP,
+                    0
+            );
+            Bukkit.getPluginManager().callEvent(event);
+        });
+    }
+
     public void startAnimation(World world) {
         animateWorlds.add(world);
     }
 
     public void clear() {
         animateWorlds.clear();
+        animationFutures.values().forEach(future -> future.cancel(false));
+        animationFutures.clear();
+    }
+
+    public void cancelAnimation(World world) {
+        animateWorlds.remove(world);
+        CompletableFuture<Void> future = animationFutures.remove(world.getUID());
+        if (future != null) {
+            future.cancel(false);
+        }
     }
 }
