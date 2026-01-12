@@ -26,6 +26,15 @@ public class TimeSkipper {
         this.targetTime = targetTime;
     }
 
+    public void startAnimation(World world) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        animationFutures.put(world.getUID(), future);
+        animateWorlds.add(world);
+
+        // callback
+        future.thenRun(() -> broadcastNightSkipEvent(world));
+    }
+
     public void start() {
         Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 1L, 1L);
     }
@@ -41,10 +50,22 @@ public class TimeSkipper {
             World world = iterator.next();
             long current = world.getTime();
             long distance = (targetTime - current + 24000) % 24000;
+            /**
+             * math:
+             * shortest distance from current time to target time
+             * targetTime - current = raw difference (can be negative)
+             * add 24000 to handle negative differences
+             * modulo by a Minecraft day to get remainder distance forward
+             */
 
             if (distance <= skipSpeed) {
                 world.setTime(targetTime);
                 iterator.remove();
+                CompletableFuture<Void> future = animationFutures.remove(world.getUID());
+
+                if (future != null) {
+                    future.complete(null);
+                }
             } else {
                 world.setTime(world.getTime() + skipSpeed);
             }
@@ -60,10 +81,6 @@ public class TimeSkipper {
             );
             Bukkit.getPluginManager().callEvent(event);
         });
-    }
-
-    public void startAnimation(World world) {
-        animateWorlds.add(world);
     }
 
     public void clear() {
