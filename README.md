@@ -1,5 +1,9 @@
 ## Sleep Animation
 
+![gif](https://github.com/user-attachments/assets/d4ff4797-c372-44b5-a994-df7f1c73ab22)
+
+Gif credits: Amythestycat and AstroLord_X using the plugin in action, on our forever world.
+
 _This was created for use on my forever world, called "derex smp". Check it out in action, server ip: `mc.longhorns.dev`_
 
 Configurable plugin that plays an animation when the night is skipped, so if you look at the night sky, you can see it slowly turning to day!
