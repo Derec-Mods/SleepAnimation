@@ -4,7 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.world.TimeSkipEvent;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,7 +20,7 @@ public class TimeSkipper {
     private final SleepAnimation plugin;
     private final int skipSpeed;
     private final long targetTime;
-    private final Set<World> animateWorlds = new HashSet<>();
+    private final Set<World> animateWorlds = ConcurrentHashMap.newKeySet();
     private final Map<UUID, CompletableFuture<Void>> animationFutures = new ConcurrentHashMap<>();
 
     public TimeSkipper(SleepAnimation plugin, int skipSpeed, long targetTime) {
@@ -27,12 +30,17 @@ public class TimeSkipper {
     }
 
     public void startAnimation(World world) {
+        if (animateWorlds.contains(world)) {
+            return;
+        }
+
         CompletableFuture<Void> future = new CompletableFuture<>();
+        // callback
+        future.thenRun(() -> broadcastNightSkipEvent(world));
+        System.out.println("breakpoint 1");
         animationFutures.put(world.getUID(), future);
         animateWorlds.add(world);
 
-        // callback
-        future.thenRun(() -> broadcastNightSkipEvent(world));
     }
 
     public void start() {
@@ -62,6 +70,7 @@ public class TimeSkipper {
                 world.setTime(targetTime);
                 iterator.remove();
                 CompletableFuture<Void> future = animationFutures.remove(world.getUID());
+                System.out.println("breakpoint 2");
 
                 if (future != null) {
                     future.complete(null);
