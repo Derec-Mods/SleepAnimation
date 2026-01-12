@@ -17,7 +17,7 @@ public class SleepListener implements Listener {
     public void onTimeSkip(TimeSkipEvent event) {
         if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) {
             event.setCancelled(true);
-            Bukkit.getLogger().info("Playing night skip animation");
+//            Bukkit.getLogger().info("Playing night skip animation");
             plugin.getTimeSkipper().startAnimation(event.getWorld());
         }
     }
