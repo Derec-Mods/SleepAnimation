@@ -36,8 +36,8 @@ public class TimeSkipper {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
         // callback
-        future.thenRun(() -> broadcastNightSkipEvent(world));
-        System.out.println("breakpoint 1");
+//        future.thenRun(() -> broadcastNightSkipEvent(world));
+//        System.out.println("breakpoint 1");
         animationFutures.put(world.getUID(), future);
         animateWorlds.add(world);
 
@@ -70,7 +70,7 @@ public class TimeSkipper {
                 world.setTime(targetTime);
                 iterator.remove();
                 CompletableFuture<Void> future = animationFutures.remove(world.getUID());
-                System.out.println("breakpoint 2");
+//                System.out.println("breakpoint 2");
 
                 if (future != null) {
                     future.complete(null);
