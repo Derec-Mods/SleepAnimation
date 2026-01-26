@@ -70,6 +70,7 @@ public class TimeSkipper {
                 iterator.remove();
                 CompletableFuture<Void> future = animationFutures.remove(world.getUID());
 //                System.out.println("breakpoint 2");
+                Bukkit.getLogger().info("The night was skipped!");
 
                 if (future != null) {
                     future.complete(null);
