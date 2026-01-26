@@ -35,7 +35,6 @@ public class TimeSkipper {
         }
 
         CompletableFuture<Void> future = new CompletableFuture<>();
-        // callback
 //        future.thenRun(() -> broadcastNightSkipEvent(world));
 //        System.out.println("breakpoint 1");
         animationFutures.put(world.getUID(), future);
@@ -75,21 +74,15 @@ public class TimeSkipper {
                 if (future != null) {
                     future.complete(null);
                 }
+
+                // fire a simple event so other plugins can listen for the end of the night-skip animation
+                Bukkit.getPluginManager().callEvent(new NightSkipCompleteEvent(world));
+                Bukkit.getPluginManager().callEvent(new TimeSkipEvent(world, TimeSkipEvent.SkipReason.NIGHT_SKIP,
+                        -1));
             } else {
                 world.setTime(world.getTime() + skipSpeed);
             }
         }
-    }
-
-    private void broadcastNightSkipEvent(World world) {
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            TimeSkipEvent event = new TimeSkipEvent(
-                    world,
-                    TimeSkipEvent.SkipReason.NIGHT_SKIP,
-                    0
-            );
-            Bukkit.getPluginManager().callEvent(event);
-        });
     }
 
     public void clear() {
