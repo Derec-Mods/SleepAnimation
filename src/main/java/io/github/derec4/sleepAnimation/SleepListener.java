@@ -15,12 +15,10 @@ public class SleepListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onTimeSkip(TimeSkipEvent event) {
-        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP && !event.isCancelled()) {
-            // Check if this world is already animating (to avoid handling our own fired event)
-            if (!plugin.getTimeSkipper().isAnimating(event.getWorld())) {
-                event.setCancelled(true);
-                plugin.getTimeSkipper().startAnimation(event.getWorld());
-            }
+        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) {
+            event.setCancelled(true);
+//            Bukkit.getLogger().info("Playing night skip animation");
+            plugin.getTimeSkipper().startAnimation(event.getWorld());
         }
     }
 }
