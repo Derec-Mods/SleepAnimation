@@ -1,0 +1,5 @@
+# The speed at which time skips during the sleep animation (in ticks per game tick)
+# Higher values = faster animation
+# Default: 50
+skip-speed: 50
+
