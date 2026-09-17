@@ -1,43 +1,45 @@
 package io.github.derec4.sleepanimation;
 
+import io.github.derec4.sleepanimation.mixin.DimensionTypeAccessor;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LunarWorldView;
+import net.minecraft.world.dimension.DimensionType;
+
+import java.util.OptionalLong;
 
 public final class SkyInterpolator {
-    private static double from = Double.NaN;
-    private static double to = Double.NaN;
+    private static double displayed = Double.NaN;
+    private static long lastNanos;
 
     private SkyInterpolator() {
     }
 
-    public static void capture(long currentTime) {
-        if (Double.isNaN(from)) {
-            from = currentTime;
-            to = currentTime;
-        }
-    }
-
-    public static void setTarget(long time) {
-        from = Double.isNaN(to) ? time : to;
-        to = time;
-        if (Math.abs(to - from) > 3000.0) {
-            from = to;
-        }
-    }
-
     public static float angle(LunarWorldView view, float tickDelta) {
-        if (Double.isNaN(from)) {
-            return view.getDimension().getSkyAngle(view.getLunarTime());
+        long actual = view.getLunarTime();
+        long now = System.nanoTime();
+        if (Double.isNaN(displayed)) {
+            displayed = actual;
+            lastNanos = now;
+            return celestial(view.getDimension(), displayed);
         }
-        double time = MathHelper.lerp(
-                (double) smooth(MathHelper.clamp(tickDelta, 0.0F, 1.0F)),
-                from,
-                to
-        );
-        return view.getDimension().getSkyAngle(Math.round(time));
+        double dt = (now - lastNanos) / 1_000_000_000.0;
+        lastNanos = now;
+        if (dt > 0.0 && dt < 0.1) {
+            double diff = actual - displayed;
+            if (Math.abs(diff) > 4000.0) {
+                displayed = actual;
+            } else {
+                displayed += diff * (1.0 - Math.exp(-14.0 * dt));
+            }
+        }
+        return celestial(view.getDimension(), displayed);
     }
 
-    private static float smooth(float t) {
-        return t * t * (3.0F - 2.0F * t);
+    private static float celestial(DimensionType type, double time) {
+        OptionalLong fixed = ((DimensionTypeAccessor) (Object) type).getFixedTime();
+        double t = fixed.isPresent() ? fixed.getAsLong() : time;
+        double d = MathHelper.fractionalPart(t / 24000.0 - 0.25);
+        double e = 0.5 - Math.cos(d * Math.PI) / 2.0;
+        return (float) ((d * 2.0 + e) / 3.0);
     }
 }
