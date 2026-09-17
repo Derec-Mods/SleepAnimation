@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "safetrample",
+  "version": "${version}",
+  "name": "SafeTrample",
+  "description": "Prevent crops from being trampled via feather falling boots.",
+  "authors": [
+    "DerexXD"
+  ],
+  "contact": {
+    "homepage": "https://www.derekchen.dev/"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.derexxd.safetrample.Safetrample"
+    ]
+  },
+  "mixins": [
+    "safetrample.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": ">=1.21 <1.22"
+  }
+}
