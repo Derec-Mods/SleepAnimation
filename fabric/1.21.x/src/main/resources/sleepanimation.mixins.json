@@ -1,10 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "io.github.derexxd.safetrample.mixin",
+  "package": "io.github.derec4.sleepanimation.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "FarmlandBlockMixin"
+    "CommandManagerMixin",
+    "ServerWorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

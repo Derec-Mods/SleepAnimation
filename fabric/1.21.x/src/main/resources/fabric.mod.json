@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
-  "id": "safetrample",
+  "id": "sleepanimation",
   "version": "${version}",
-  "name": "SafeTrample",
-  "description": "Prevent crops from being trampled via feather falling boots.",
+  "name": "Sleep Animation",
+  "description": "Plays a smooth time animation when sleeping skips the night.",
   "authors": [
     "DerexXD"
   ],
   "contact": {
-    "homepage": "https://www.derekchen.dev/"
+    "homepage": "https://github.com/DereC4/SleepAnimation"
   },
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.derexxd.safetrample.Safetrample"
+      "io.github.derec4.sleepanimation.SleepAnimation"
     ]
   },
   "mixins": [
-    "safetrample.mixins.json"
+    "sleepanimation.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.15.11",
