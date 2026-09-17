@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class ModConfig {
-    public static int skipSpeed = 50;
+    public static int skipSpeed = 20;
     public static boolean instantWakeup;
 
     private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("sleepanimation.json");
@@ -39,13 +39,13 @@ public final class ModConfig {
             }
         } catch (IOException ignored) {
         }
-        skipSpeed = data.skipSpeed == null ? 50 : Math.max(1, data.skipSpeed);
+        skipSpeed = data.skipSpeed == null ? 20 : Math.max(1, data.skipSpeed);
         instantWakeup = data.instantWakeup;
     }
 
     private static final class Data {
         @SerializedName("skip-speed")
-        Integer skipSpeed = 50;
+        Integer skipSpeed = 20;
         @SerializedName("instant-wakeup")
         boolean instantWakeup;
     }

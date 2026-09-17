@@ -7,6 +7,10 @@
     "CommandManagerMixin",
     "ServerWorldMixin"
   ],
+  "client": [
+    "ClientWorldMixin",
+    "LunarWorldViewMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
